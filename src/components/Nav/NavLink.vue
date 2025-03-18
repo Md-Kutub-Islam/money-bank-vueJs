@@ -1,14 +1,6 @@
 <template>
-  <q-item
-    clickable
-    tag="a"
-    target="_blank"
-    :href="props.link"
-  >
-    <q-item-section
-      v-if="props.icon"
-      avatar
-    >
+  <q-item class="row align-center" clickable tag="a" :to="props.link">
+    <q-item-section v-if="props.icon" avatar>
       <q-icon :name="props.icon" />
     </q-item-section>
 
@@ -23,22 +15,17 @@
 const props = defineProps({
   title: {
     type: String,
-    required: true
-  },
-
-  caption: {
-    type: String,
-    default: ''
+    required: true,
   },
 
   link: {
     type: String,
-    default: '#'
+    default: '#',
   },
 
   icon: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 </script>
