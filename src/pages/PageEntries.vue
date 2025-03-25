@@ -21,9 +21,11 @@
           {{ useCurrencify(balence) }}
         </div>
       </div>
-      <div class="row q-px-md q-pb-sm q-col-gutter-sm bg-primary">
+      <q-form @submit="addEntry" class="row q-px-md q-pb-sm q-col-gutter-sm bg-primary">
         <div class="col">
           <q-input
+            ref="nameRef"
+            v-model.number="addEntryForm.name"
             type="text"
             input-class="text-right"
             placeholder="Name"
@@ -34,6 +36,7 @@
         </div>
         <div class="col">
           <q-input
+            v-model="addEntryForm.amount"
             type="number"
             input-class="text-right"
             step="0.01"
@@ -44,17 +47,18 @@
           />
         </div>
         <div class="col col-auto">
-          <q-btn color="primary" icon="add" round />
+          <q-btn type="submit" color="primary" icon="add" round />
         </div>
-      </div>
+      </q-form>
     </q-footer>
   </q-page>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useCurrencify } from 'src/use/useCurensify'
 import { useAmountColorClass } from 'src/use/useAmountColorClass'
+import { uid } from 'quasar'
 
 const entries = ref([
   {
@@ -89,4 +93,23 @@ const balence = computed(() => {
     return acc + amount
   }, 0)
 })
+
+const nameRef = ref(null)
+
+const addEntryForm = reactive({
+  name: '',
+  amount: null,
+})
+
+const resetForm = () => {
+  addEntryForm.name = ''
+  addEntryForm.amount = null
+  nameRef.value.focus()
+}
+
+const addEntry = () => {
+  const newEntry = Object.assign({}, addEntryForm, { id: uid() })
+  entries.value.push(newEntry)
+  resetForm()
+}
 </script>
