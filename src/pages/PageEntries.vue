@@ -3,17 +3,58 @@
     <div class="q-pa-md">
       <q-list bordered separator>
         <q-item v-for="entrie in entries" :key="entrie.id">
-          <q-item-section> {{ entrie.name }} </q-item-section>
+          <q-item-section :class="useAmountColorClass(entrie.amount)">
+            {{ entrie.name }}
+          </q-item-section>
 
-          <q-item-section side top> {{ currencify(entrie.amount) }} </q-item-section>
+          <q-item-section :class="useAmountColorClass(entrie.amount)" side top>
+            {{ useCurrencify(entrie.amount) }}
+          </q-item-section>
         </q-item>
       </q-list>
     </div>
+
+    <q-footer class="bg-transparent">
+      <div class="row justify-between q-pb-sm q-px-xl q-py-sm text-h6 shadow-up-3">
+        <div class="col text-grey-7">Balence:</div>
+        <div class="col text-right" :class="useAmountColorClass(balence)">
+          {{ useCurrencify(balence) }}
+        </div>
+      </div>
+      <div class="row q-px-md q-pb-sm q-col-gutter-sm bg-primary">
+        <div class="col">
+          <q-input
+            type="text"
+            input-class="text-right"
+            placeholder="Name"
+            bg-color="white"
+            outlined
+            dense
+          />
+        </div>
+        <div class="col">
+          <q-input
+            type="number"
+            input-class="text-right"
+            step="0.01"
+            placeholder="Amount"
+            bg-color="white"
+            outlined
+            dense
+          />
+        </div>
+        <div class="col col-auto">
+          <q-btn color="primary" icon="add" round />
+        </div>
+      </div>
+    </q-footer>
   </q-page>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useCurrencify } from 'src/use/useCurensify'
+import { useAmountColorClass } from 'src/use/useAmountColorClass'
 
 const entries = ref([
   {
@@ -43,20 +84,9 @@ const entries = ref([
   },
 ])
 
-function currencify(amount) {
-  let posNegSymbol = ''
-  if (amount > 0) posNegSymbol = '+'
-  else if (amount < 0) posNegSymbol = '-'
-
-  const currencySymbol = '$',
-    amountPositive = Math.abs(amount),
-    amountFormatted = amountPositive.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })
-
-  return `${posNegSymbol} ${currencySymbol} ${amountFormatted}`
-}
-
-console.log(entries)
+const balence = computed(() => {
+  return entries.value.reduce((acc, { amount }) => {
+    return acc + amount
+  }, 0)
+})
 </script>
